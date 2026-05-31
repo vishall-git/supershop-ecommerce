@@ -1,10 +1,10 @@
 const express = require('express')
 const app = express();
-
-const productRoutes=require('./routes/product.routes')
+const productModel = require('./models/product.model');
+c
+;
 
 app.use(express.json());
 
-app.use('/',productRoutes)
-
+app.use('/product',productRoutes)
 module.exports = app
