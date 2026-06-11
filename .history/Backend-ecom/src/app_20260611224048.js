@@ -1,0 +1,16 @@
+const express = require("express");
+const app = express();
+const cookieParser=require('cookie-parser')
+
+const productRoutes = require("./routes/product.routes");
+const authRoutes = require("./routes/auth.routes");
+const cartRoutes = require("./routes/cart.routes");
+
+app.use(express.json());
+app.use(cookieParser)
+
+app.use("/", productRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/cart", cartRoutes);
+
+module.exports = app;

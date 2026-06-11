@@ -1,0 +1,9 @@
+const express = require('express');
+const userModel=require('../models/user.model')
+const control = express();
+
+control.use(express.json());
+
+async function registerUser(){
+    control.post()
+}

@@ -1,0 +1,12 @@
+const mongoose = require('mongoose');
+
+
+const cartSchema=new mongoose.Schema({
+    user:{
+        type:mongoose.Schema.ObjectId,
+        ref:'user'
+    },
+    items:[]
+})
+
+export.modules
