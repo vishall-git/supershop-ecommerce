@@ -5,9 +5,9 @@ import { MdCurrencyRupee } from "react-icons/md";
 export default function Products() {
     const [data, setData] = useState([]);
     const fetchProducts = async () => {
-        const response = await fetch('https://api.escuelajs.co/api/v1/products');
+        const response = await fetch('{import.meta.env.VITE_API_URL}');
         const result = await response.json();
-        setData(result)
+        setData(result.product)
     }
     useEffect(() => {
         fetchProducts();
@@ -23,9 +23,9 @@ export default function Products() {
         ml-7 pt-30">
             {data.map((product) => (
                 <ProductBlock
-                    key={product.id}
-                    id={product.id}
-                    img={product.images}
+                    key={product._id}
+                    id={product._id}
+                    img={product.image}
                     title={product.title}
                     price={product.price}
                 />
