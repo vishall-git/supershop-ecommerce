@@ -8,17 +8,45 @@ async function createCart(req, res) {
   if (!items || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ message: "empty or missing items" });
   }
-  try {
-    const cart = new cartModel({ user: user, items: items });
 
+  try {
+    let cart = await cartModel.findOne({ user });
+
+    if (!cart) {
+      cart = new cartModel({
+        user,
+        items,
+      });
+    } else {
+      for (const newItem of items) {
+        const existingItem = cart.items.find(
+          (item) => item.product.toString() === newItem.product
+        );
+
+        if (existingItem) {
+          existingItem.quantity += newItem.quantity;
+          existingItem.price = newItem.price;
+        } else {
+          cart.items.push(newItem);
+        }
+      }
+    }
+    console.log(cart.items)
     await cart.save();
 
-    //add more data in cart items array
-    await cart.populate('items.product', 'title image estDelivery');
+    await cart.populate(
+      "items.product",
+      "title image estDelivery"
+    );
 
-    return res.status(201).json({ message: "Cart created successfully", cart });
+    return res.status(200).json({
+      message: "Cart updated successfully",
+      cart,
+    });
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({
+      message: err.message,
+    });
   }
 }
 
@@ -31,10 +59,10 @@ async function getCart(req, res) {
 
     if (cart.items.length === 0) { return res.status(404).json({ message: "empty cart", cart }) }
 
-    return res.status(200).json({ message: "all items are here" })
+    return res.status(200).json({ message: "all items are here", cart })
 
   } catch (err) {
-    return res.status(500).json({ message: err.message })
+    return res.status(500).json({ message: err.message, cart })
   }
 }
 

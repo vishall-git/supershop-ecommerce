@@ -43,9 +43,11 @@ async function loginUser(req, res) {
   const { email, password } = req.body;
   const userExist = await userModel.findOne({ email });
 
+  
+
   if (!userExist) {
     return res.status(400).json({
-      message: "enter correct email and password",
+      message: "enter correct email",
     });
   }
 
