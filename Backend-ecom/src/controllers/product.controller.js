@@ -30,18 +30,18 @@ async function allProducts(req, res) {
 
 async function searchProductByTags(req, res) {
     try {
-        const tags = req.params.tags
-        const data = await productModel.find({
-            tags: { $in: tags }
-        })
-        res.status(200).json({
-            product: data
-        })
+        const { tags } = req.query;
+        const products = await productModel.find({
+            tags: { $in: [tags.toLowerCase()] }
+        });
+
+        res.status(200).json(products);
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
-
 }
+
+
 
 function updateProduct(req, res) {
     res.status(403).json({

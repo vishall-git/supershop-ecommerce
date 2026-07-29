@@ -23,6 +23,7 @@ lerna-debug.log*
 .History
 .history
 /.history
+.history/
 
 # Build folders
 dist/
@@ -40,6 +41,7 @@ Thumbs.db
 
 # VS Code
 .vscode/*
+*_20*.js
 !.vscode/extensions.json
 
 # IDE files

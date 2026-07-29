@@ -4,11 +4,22 @@ import { FaShoppingCart } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import logo from "../../assets/supershop.png";
-import  {CartCountContext} from "../../context/CountContext";
-import { useContext } from "react";
+import { CartCountContext } from "../../context/CountContext";
+import { useState, useContext } from "react";
+import { productArrayContext } from "../../context/ProductArrayContext";
 
 export default function Navbar() {
-  const {count}=useContext(CartCountContext);
+  const { count } = useContext(CartCountContext);
+  const { setSearched, setData } = useContext(productArrayContext)
+  const [tags, setTags] = useState('')
+  async function handleSearch(){
+    const response= await fetch(`${import.meta.env.VITE_API_URL}/search?tags=${tags}`);
+    const data=await response.json();
+    setData(data)
+    setTags('')
+    setSearched(true)
+  }
+  
   return (
     <nav
       className="
@@ -23,6 +34,7 @@ export default function Navbar() {
       {/* Logo */}
       <Link
         to="/"
+        onClick={() => setSearched(false)}
         className="
           shrink-0
           w-20
@@ -35,6 +47,7 @@ export default function Navbar() {
           className="w-full h-auto object-contain"
           src={logo}
           alt="Supershop Logo"
+          
         />
       </Link>
 
@@ -62,6 +75,14 @@ export default function Navbar() {
           "
           type="text"
           placeholder="Search"
+          onChange={(e) =>
+            setTags(
+              e.target.value
+                .split(",")
+                .map(tag => tag.trim())
+                .filter(tag => tag !== "")
+            )
+          }
         />
 
         <button
@@ -71,6 +92,7 @@ export default function Navbar() {
             px-2 sm:px-3
             py-2
           "
+          onClick={handleSearch}
         >
           <IoIosSearch className="w-5 h-6 sm:w-6 sm:h-6 cursor-pointer" />
         </button>

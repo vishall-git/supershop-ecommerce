@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post('/add', authMiddlewares, cartController.createCart)
 router.get('/', authMiddlewares, cartController.getCart)
-router.delete('/', authMiddlewares, cartController.deleteAllItems)
+router.delete('/delete', authMiddlewares, cartController.deleteAllItems)
 router.delete('/:productId', authMiddlewares, cartController.deleteCartItemsById)
 
 

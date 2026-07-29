@@ -1,2 +1,0 @@
-const ImageKit=require('@imagekit/nodejs');
-

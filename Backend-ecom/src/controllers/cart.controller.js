@@ -31,7 +31,7 @@ async function createCart(req, res) {
         }
       }
     }
-    console.log(cart.items)
+
     await cart.save();
 
     await cart.populate(

@@ -15,7 +15,7 @@ const API_URL = import.meta.env.VITE_API_URL || "";
 
 export default function FetchCart() {
   const [cart, setCart] = useState(null);
-  const {setCount} = useContext(CartCountContext)
+  const {count,setCount} = useContext(CartCountContext)
   const {payment,setPayment}=useContext(checkoutContext)
   const { isLoggined } = useContext(loginUserContext);
   const [loading, setLoading] = useState(true);
@@ -37,6 +37,7 @@ export default function FetchCart() {
       }
 
       setCart(result.cart || null);
+      setCount(result.cart.items.length)
     } catch (err) {
       setCart(null);
       setError(err.message || "Something went wrong");
@@ -58,7 +59,7 @@ export default function FetchCart() {
 
   async function removeItem(productId) {
     try {
-      const response = await fetch(`${API_URL}/api/cart/remove`, {
+      const response = await fetch(`${API_URL}/api/cart/${productId}`, {
         method: "DELETE",
         credentials: "include",
         headers: {
@@ -73,17 +74,18 @@ export default function FetchCart() {
         throw new Error(result.message || "Unable to remove item");
       }
 
-      fetchCart();
+      setCart((prev)=>({
+        ...prev,
+        items:prev.items.filter(
+          (item)=>item.product._id!==productId
+        ),
+      }))
     } catch (err) {
       setError(err.message);
     }
   }
 
-  const totalItems = useMemo(() => {
-    if (!cart?.items) return 0;
 
-    return cart.items.reduce((sum, item) => sum + item.quantity, 0);
-  }, [cart]);
 
   const subtotal = useMemo(() => {
     if (!cart?.items) return 0;
@@ -94,14 +96,12 @@ export default function FetchCart() {
     );
   }, [cart]);
 
-  setCount(totalItems)
-
   return (
     <>
       <Navbar />
       {payment&&<CheckoutBlock/>}
       {isLoggined ? (
-        <main className="min-h-screen bg-linear-to-b from-slate-50 to-slate-100 pt-24 pb-16 px-4">
+        <main className="min-h-screen bg-linear-to-b from-slate-50 to-slate-100 pt-33 pb-16 px-4 ">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center gap-3 mb-8">
               <HiOutlineShoppingBag className="text-3xl text-slate-800" />
@@ -110,9 +110,9 @@ export default function FetchCart() {
                 Your Cart
               </h1>
 
-              {totalItems > 0 && (
+              {count > 0 && (
                 <span className="ml-2 rounded-full bg-slate-900 px-3 py-1 text-sm text-white">
-                  {totalItems} item{totalItems !== 1 ? "s" : ""}
+                  {count} item{count !== 1 ? "s" : ""}
                 </span>
               )}
             </div>
@@ -158,7 +158,7 @@ export default function FetchCart() {
 
                     <div className="space-y-3">
                       <div className="flex justify-between">
-                        <span>Subtotal ({totalItems} items)</span>
+                        <span>Subtotal ({count} items)</span>
 
                         <span className="flex items-center font-semibold">
                           <MdCurrencyRupee />

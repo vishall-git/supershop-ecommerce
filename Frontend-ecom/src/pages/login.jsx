@@ -12,6 +12,7 @@ import {
   HiOutlineArrowRightOnRectangle,
   HiOutlineSparkles,
 } from "react-icons/hi2";
+import { CartCountContext } from "../context/CountContext.jsx";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -36,9 +37,11 @@ export default function Login() {
         }
       );
       const result = await response.json();
+      console.log(result)
 
       if (response.status === 200) {
         setIsLoggined(true);
+        
         navigate("/");
         return;
       }
@@ -134,9 +137,11 @@ export default function Login() {
 
 function ProfileDashboard({ setIsLoggined, navigate }) {
   const [loggingOut, setLoggingOut] = useState(false);
+  const {setCount} = useContext(CartCountContext)
 
   async function handleLogout() {
     setLoggingOut(true);
+    setCount(0)
     try {
       await fetch(`${import.meta.env.VITE_API_URL}/api/auth/logout`, {
         method: "POST",

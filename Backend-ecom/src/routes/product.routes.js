@@ -9,6 +9,7 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 router.post("/product/add", upload.single("image"), productController.addProducts);
 router.get('/', productController.allProducts);
+router.get('/search',productController.searchProductByTags)
 router.delete('/delete/:id', productController.deleteProduct);
 router.patch("/:id", productController.updateProduct);
 
