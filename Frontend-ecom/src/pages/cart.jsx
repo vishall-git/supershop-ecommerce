@@ -73,13 +73,18 @@ export default function FetchCart() {
       if (!response.ok) {
         throw new Error(result.message || "Unable to remove item");
       }
+setCart((prev) => {
+  const updatedItems = prev.items.filter(
+    (item) => item.product._id !== productId
+  );
 
-      setCart((prev)=>({
-        ...prev,
-        items:prev.items.filter(
-          (item)=>item.product._id!==productId
-        ),
-      }))
+  setCount(updatedItems.length);
+
+  return {
+    ...prev,
+    items: updatedItems,
+  };
+});
     } catch (err) {
       setError(err.message);
     }

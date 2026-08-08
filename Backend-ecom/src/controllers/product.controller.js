@@ -31,8 +31,11 @@ async function allProducts(req, res) {
 async function searchProductByTags(req, res) {
     try {
         const { tags } = req.query;
+        const search = tags.toLowerCase();
         const products = await productModel.find({
-            tags: { $in: [tags.toLowerCase()] }
+            $or:[
+            {tags: { $in: [search] }},
+            {title:{$regex:search,$options:'i'}}]
         });
 
         res.status(200).json(products);
@@ -40,7 +43,6 @@ async function searchProductByTags(req, res) {
         res.status(500).json({ message: err.message })
     }
 }
-
 
 
 function updateProduct(req, res) {

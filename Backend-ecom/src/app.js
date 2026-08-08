@@ -1,3 +1,4 @@
+
 const express = require("express");
 const app = express();
 const cors = require('cors')
@@ -8,7 +9,7 @@ const authRoutes = require("./routes/auth.routes");
 const cartRoutes = require("./routes/cart.routes");
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
 }));
 

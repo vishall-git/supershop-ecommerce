@@ -6,7 +6,7 @@ import ProductSkeleton from "../skeleton/skeleton";
 import { productArrayContext } from "../../context/ProductArrayContext";
 
 export default function Products() {
-  const { searched, setSearched, data, setData } = useContext(productArrayContext)
+  const { searched,setDummyData, data, setData } = useContext(productArrayContext)
   const [loading, setLoading] = useState(true);
 
   async function fetchProducts() {
@@ -19,6 +19,7 @@ export default function Products() {
 
       const result = await response.json();
       setData(result.product);
+      setDummyData(result.product)
     } catch (err) {
       console.log(err.message);
     } finally {

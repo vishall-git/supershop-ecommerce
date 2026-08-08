@@ -10,16 +10,28 @@ import { productArrayContext } from "../../context/ProductArrayContext";
 
 export default function Navbar() {
   const { count } = useContext(CartCountContext);
-  const { setSearched, setData } = useContext(productArrayContext)
+  const { dummyData, setSearched, setData } = useContext(productArrayContext)
   const [tags, setTags] = useState('')
-  async function handleSearch(){
-    const response= await fetch(`${import.meta.env.VITE_API_URL}/search?tags=${tags}`);
-    const data=await response.json();
-    setData(data)
-    setTags('')
-    setSearched(true)
+  async function handleSearch() {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/search?tags=${tags}`
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.log(result.message);
+        return;
+      }
+
+      setData(result);
+      setSearched(true);
+      setTags("");
+    } catch (err) {
+      console.log(err);
+    }
   }
-  
   return (
     <nav
       className="
@@ -34,7 +46,10 @@ export default function Navbar() {
       {/* Logo */}
       <Link
         to="/"
-        onClick={() => setSearched(false)}
+        onClick={() => {
+          setSearched(false)
+          setData(dummyData)
+        }}
         className="
           shrink-0
           w-20
@@ -47,7 +62,7 @@ export default function Navbar() {
           className="w-full h-auto object-contain"
           src={logo}
           alt="Supershop Logo"
-          
+
         />
       </Link>
 
@@ -75,14 +90,11 @@ export default function Navbar() {
           "
           type="text"
           placeholder="Search"
-          onChange={(e) =>
-            setTags(
-              e.target.value
-                .split(",")
-                .map(tag => tag.trim())
-                .filter(tag => tag !== "")
-            )
-          }
+          value={tags}
+          onChange={(e) => setTags(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {handleSearch()}
+          }}
         />
 
         <button
@@ -93,6 +105,7 @@ export default function Navbar() {
             py-2
           "
           onClick={handleSearch}
+
         >
           <IoIosSearch className="w-5 h-6 sm:w-6 sm:h-6 cursor-pointer" />
         </button>
